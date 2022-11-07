@@ -6,8 +6,8 @@
 
 typedef struct card_s
 {
-	char suit;
-	int face;
+	char suit; // s (spade), d (diamond), c (club), h (heart)
+	int face; // 1 (ace) - 9, 10 (queen)
 	struct card_s* next;
 } card;
 
