@@ -31,3 +31,9 @@ void node_insert(card* node_before, card* node_new, card* node_after)
 	node_new->next = node_after;
 	return;
 }
+
+void node_print_debug(card target)
+{
+	printf("%d of %c, next is %.8X\n", target.face, target.suit, (unsigned)target.next);
+	return;
+}
