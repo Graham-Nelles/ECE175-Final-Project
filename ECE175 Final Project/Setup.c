@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h> // malloc & calloc
 
-#define DECKSIZE 37
+#define DECKSIZE 41
 
 typedef struct card_s
 {
@@ -17,34 +17,25 @@ typedef struct card_s
 	struct card_s* next;
 } card;
 
-card node_create(char suit, int face);
+//void node_append(card* node_end, card* node_new);
+void node_create(card* target,  char suit, int face);
 
-void create_decklist(void) // This may need to be moved to main, nodes created here may go out of scope upon returning to main
+void create_decklist(card* head)
 {
-	card current;
-	card* P_cur = &current;
-	P_cur = (card*)calloc(DECKSIZE, sizeof(card));
+	head->suit = 'h';
+	head->face = 11;
+	head->next = head + 1;
 
-	for (int s = 1; s <= 9; ++s) // Spades
+	card* current = head + 1;
+	for (int i = 1; i <= 40; ++i)
 	{
-		*P_cur = node_create('s', s);
-		P_cur++;
+		if (i <= 10) current->suit = 's';
+		else if (i <= 20) current->suit = 'd';
+		else if (i <= 30) current->suit = 'c';
+		else if (i <= 40) current->suit = 'h';
+		current->face = (i - 1) % 10;
+		current->next = current++;
 	}
-	for (int d = 1; d <= 9; ++d) // Diamonds
-	{
-		*P_cur = node_create('d', d);
-		P_cur++;
-	}
-	for (int c = 1; c <= 9; ++c) // Clubs
-	{
-		*P_cur = node_create('c', c);
-		P_cur++;
-	}
-	for (int h = 1; h <= 9; ++h) // Hearts
-	{
-		*P_cur = node_create('h', h);
-		P_cur++;
-	}
-	*P_cur = node_create('h', 10); // Queen of Hearts
+
 	return;
 }
