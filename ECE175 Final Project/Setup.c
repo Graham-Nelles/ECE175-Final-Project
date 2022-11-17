@@ -33,7 +33,7 @@ void create_decklist(card* head)
 		else if (i <= 20) current->suit = 'd';
 		else if (i <= 30) current->suit = 'c';
 		else if (i <= 40) current->suit = 'h';
-		current->face = (i - 1) % 10;
+		current->face = ((i - 1) % 10) + 1;
 		current->next = current++;
 	}
 
