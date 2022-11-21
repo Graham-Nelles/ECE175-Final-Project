@@ -1,0 +1,15 @@
+				TO DO:
+FIX NOW:
+2: Validate node_remove function
+3: Implement node_transfer function
+	currently blocked by 2
+-----
+ANTICIPATED PROBLEMS:
+4: Deck list is calloc'ed
+	this could cause issues later when cards need to be removed from deck
+	might be able to get around this by realloc'ing deck memory whenever cards are removed from the list
+	possible fix: malloc memory for each card in create_decklist (malloc in loop after moving pointer for next card?) instead of calloc'ing all at once
+		this may not work due to needing to move pointers through deck memory to create all cards: malloc'ed memory might not behave in the same way (if it is not allocated contiguously)
+-----
+NICE-TO-HAVE:
+Function to check if a list properly terminates (loop detection)

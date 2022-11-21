@@ -31,4 +31,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Algorithm.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="To Do.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

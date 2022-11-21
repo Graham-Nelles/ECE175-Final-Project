@@ -21,21 +21,29 @@ void node_print_simple(card* target);
 void list_shuffle(card** head);
 void array_shuffle(card* array[]);
 void content_shuffle(card* head);
+int list_length(card* head);
 
 // Setup.c
 void create_decklist(card* head);
 
+// Display.c
+void printcard(card target);
+
 int main(void)
 {
-	//card head = { 'h', 11, NULL };
-	card* headptr = (card*)calloc(DECKSIZE, sizeof(card));
+	card* headptr = (card*)calloc(DECKSIZE, sizeof(card)); // Allocate memory for deck
 
-	card* current = headptr;
-	create_decklist(current);
-	//for (int i = 0; i < DECKSIZE; ++i) node_print_debug(current + i);
+	create_decklist(headptr);
 
-	for (int i = 0; i < SHUFFLES; ++i) content_shuffle(headptr);
-	for (int i = 0; i < DECKSIZE; ++i) node_print_simple(current + i);
+	//for (int i = 0; i < SHUFFLES; ++i) content_shuffle(headptr); // Shuffle deck SHUFFLES times
+	//for (int i = 0; i < DECKSIZE; ++i) node_print_simple(headptr + i); // Print entire deck
+
+	//printf("%d cards long\n", list_length(headptr));
+	//printf("\n%d\n", sizeof(card));
+
+	for (int i = 0; i < DECKSIZE; ++i) printcard(*(headptr + i));
+
+	printf("\n%d\n", list_length(headptr));
 
 	return 0;
 }

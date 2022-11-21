@@ -1,0 +1,15 @@
+Algorithm:
+
+allocate memory for deck and populate it
+shuffle deck 1000 times
+deal cards (one at a time) to players, malloc for each card owned by a player
+display player's hand
+check if any cards in player hand match first card, reprat for all cards in hand
+if matching cards are found, remove them from hand list
+repeat above steps for computer's hand
+pick a player to go first, let them pick a card at random from opponent's hand
+remove that card from opponent's hand, add it to player's hand
+check for pairs, remove if any are found
+repeat for computer, card will be picked randomly
+players take turns until only one card is left in both hands (will be the queen of hearts), that player loses
+prompt player to play again?

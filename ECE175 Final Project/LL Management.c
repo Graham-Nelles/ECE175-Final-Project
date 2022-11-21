@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h> // rand, srand
 
-#define DECKSIZE 41
+#define DECKSIZE 41 // Number of cards in deck
 #define SEED 1 // Seed for rand
 #define HEARTS 3
 #define DIAMONDS 4
@@ -23,6 +23,11 @@ void node_create(card* target, char suit, int face)
 {
 	target->suit = suit;
 	target->face = face;
+}
+
+void node_transfer(card* list_donor, card* list_reciever, card* target) // This function might actually need 3 args: head of donor list, head of reciever list, node to be transferred from donor to reciever
+{
+	// FIXME: this will likely rely rely on node_remove. Validate node_remove before proceeding with this function
 }
 
 /*void node_append(card* node_end, card* node_new)
@@ -48,7 +53,7 @@ void node_remove(card* head, card* target)
 
 void node_print_debug(card* target)
 {
-	printf("%d of %c, next is %p\n", target->face, target->suit, target->next);
+	printf("card at %p is %d of %c, next is %p\n", target, target->face, target->suit, target->next);
 	return;
 }
 
@@ -105,6 +110,19 @@ void content_shuffle(card* head) // Currently working shuffle function
 		printf("\n\n");*/
 	}
 	return;
+}
+
+int list_length(card* head)
+{
+	int cards = 0;
+	card* current = head;
+	while (current != NULL)
+	{
+		cards++; // Increment counter
+		//node_print_simple(current);
+		current = current->next; // Go to next card
+	}
+	return cards;
 }
 
 // OLD SHUFFLE FUNCTIONS
