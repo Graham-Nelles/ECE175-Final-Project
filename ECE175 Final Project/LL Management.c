@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h> // rand, srand
+#include <stdbool.h>
 
 #define DECKSIZE 41 // Number of cards in deck
 #define SEED 1 // Seed for rand
@@ -43,11 +44,28 @@ void node_insert(card* node_before, card* node_new, card* node_after)
 	return;
 }
 
-void node_remove(card* head, card* target)
+void node_remove(card* head, card target) // FIXME: not finding target card, returning same list
 {
-	card* temp = head;
-	if (head == target) head = target; // Remove first element of list
-	else for (int i = 0; i < DECKSIZE; ++i) if (temp->next == target) temp->next = target->next; // Once found, make node before target point to node after target
+	if (head->face == target.face && head->suit == target.suit) // Remove first card of list
+	{
+		head = &target;
+		return;
+	}
+
+	card* temp;
+	card* tempnext;
+	for (int i = 0; i < list_length(head) - 1; ++i)
+	{
+		temp = head + i;
+		tempnext = temp->next;
+		if (tempnext->face == target.face && tempnext->suit == target.suit)
+		{
+			temp = tempnext->next;
+			return;
+		}
+	}
+
+	printf("Error: card not found\n");
 	return;
 }
 
@@ -79,6 +97,8 @@ void content_shuffle(card* head) // Currently working shuffle function
 {
 	// This function works by keeping the list structure itself unchanged, swapping the contents of cards to shuffle the deck
 	
+	int size = list_length(head);
+
 	// Temp vars for holding card info during swap
 	char suit_temp;
 	int face_temp;
@@ -86,11 +106,11 @@ void content_shuffle(card* head) // Currently working shuffle function
 	int target_ind;
 	card* target;
 	card* current;
-	for (int i = 0; i < DECKSIZE; ++i)
+	for (int i = 0; i < size; ++i)
 	{
 		current = head + i; // Ptr to first card to be swapped
 
-		target_ind = rand() % DECKSIZE;
+		target_ind = rand() % size;
 		target = head + target_ind; // Ptr to second card to be swapped
 
 		suit_temp = current->suit;
@@ -116,6 +136,7 @@ int list_length(card* head)
 {
 	int cards = 0;
 	card* current = head;
+	if (current == NULL) return cards;
 	while (current != NULL)
 	{
 		cards++; // Increment counter
@@ -123,6 +144,23 @@ int list_length(card* head)
 		current = current->next; // Go to next card
 	}
 	return cards;
+}
+
+bool detectloop(card* head)
+{
+	// Tortise and hare algorithm
+
+	card* tortise = head; // Slow
+	card* hare = head; // Fast
+
+	while (1)
+	{
+		tortise = tortise->next; // Move to next node
+		hare = hare->next->next; // Move two nodes after current
+
+		if (hare->next == NULL || hare->next->next == NULL) return 0; // hare has reached end of list
+		if (tortise == hare) return 1; // hare has caught up to tortise
+	}
 }
 
 // OLD SHUFFLE FUNCTIONS
@@ -151,7 +189,7 @@ void list_shuffle(card** head)
 	listarr[DECKSIZE - 1]->next = NULL; // Termainate list at last element
 
 	// Output shuffled list
-
+	return;
 }
 
 void list_to_array(card* head, card** array)

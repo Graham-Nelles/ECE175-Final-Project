@@ -20,8 +20,57 @@ int list_length(card* head);
 
 void printhand(card* head)
 {
-	// Use list_length function to determine how many frames to make
-	// Print proper amount of frames, space-seperated
+	int cards = list_length(head);
+
+	// Top edges
+	for (int i = 0; i < cards; ++i)
+	{
+		printf("%c", 2522);
+		for (int i = 0; i < 9; ++i)	printf("%c", 2500);
+		printf("%c  ", 2495);
+	}
+	printf("\n");
+
+	// Upper sides
+	for (int i = 0; i < cards; ++i) printf("%c         %c  ", 2483, 2483);
+	printf("\n");
+	for (int i = 0; i < cards; ++i) printf("%c         %c  ", 2483, 2483);
+	printf("\n");
+
+	// Center sides
+	
+	for (int i = 0; i < cards; ++i)
+	{
+		if (head->suit == 'h')	printf("%c   %c ", 2483, HEARTS);
+		else if (head->suit == 'd')	printf("%c   %c ", 2483, DIAMONDS);
+		else if (head->suit == 'c')	printf("%c   %c ", 2483, CLUBS);
+		else if (head->suit == 's')	printf("%c   %c ", 2483, SPADES);
+		else printf("ERROR: invalid suit\n");
+
+		if (head->face == 1) printf("%c   %c  ", 'A', 2483); // Aces
+		else if (head->face == 10) printf("%d  %c  ", head->face, 2483); // One less space after face for 10
+		else if (head->face == 11) printf("%c   %c  ", 'Q', 2483); // Queen
+		else printf("%d   %c  ", head->face, 2483);
+
+		head = head->next;
+	}
+	printf("\n");
+
+	// Lower sides
+	for (int i = 0; i < cards; ++i) printf("%c         %c  ", 2483, 2483);
+	printf("\n");
+	for (int i = 0; i < cards; ++i) printf("%c         %c  ", 2483, 2483);
+	printf("\n");
+
+	// Bottom edges
+	for (int i = 0; i < cards; ++i)
+	{
+		printf("%c", 2496);
+		for (int i = 0; i < 9; ++i)	printf("%c", 2500);
+		printf("%c  ", 2521);
+	}
+	printf("\n");
+
 	return;
 }
 
