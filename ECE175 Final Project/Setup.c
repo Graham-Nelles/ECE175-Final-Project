@@ -122,6 +122,13 @@ void create_test_list(card* head)
 		current->next = current + 1;
 		current = current->next;
 	}
+
+	// Extra 10 to create a pair
+	current->suit = 's';
+	current->face = 10;
+	current->next = current + 1;
+	current = current->next;
+
 	current->suit = 'h';
 	current->face = 10;
 	current->next = NULL; // End list
