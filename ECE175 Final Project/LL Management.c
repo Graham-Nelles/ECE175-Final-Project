@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #define DECKSIZE 41 // Number of cards in deck
-#define SEED 1 // Seed for rand
+#define SEED 1 // Seed for rand - normally seeded with time()
 #define HEARTS 3
 #define DIAMONDS 4
 #define CLUBS 5
@@ -31,11 +31,15 @@ void node_transfer(card* list_donor, card* list_reciever, card* target) // This 
 	// FIXME: this will likely rely rely on node_remove. Validate node_remove before proceeding with this function
 }
 
-/*void node_append(card* node_end, card* node_new)
+void node_append(card* head, card* new)
 {
-	node_end->next = node_new;
+	card* current;
+	for (current = head; current->next != NULL; current = current->next);
+	current->next = new;
+	new->next = NULL;
+
 	return;
-}*/
+}
 
 void node_insert(card* node_before, card* node_new, card* node_after)
 {
@@ -98,6 +102,7 @@ void content_shuffle(card* head) // Currently working shuffle function
 	// This function works by keeping the list structure itself unchanged, swapping the contents of cards to shuffle the deck
 	
 	int size = list_length(head);
+	srand(SEED);
 
 	// Temp vars for holding card info during swap
 	char suit_temp;
@@ -163,7 +168,7 @@ bool detectloop(card* head)
 	}
 }
 
-// OLD SHUFFLE FUNCTIONS
+// OLD SHUFFLE FUNCTIONS - IGNORE BELOW HERE
 
 void list_shuffle(card** head)
 {
@@ -215,5 +220,35 @@ void array_shuffle(card* array[])
 			array[j] = array[swapind];
 			array[swapind] = temp;
 		}
+	}
+}
+
+void node_remove_special(card* head, card* target, int type)
+{
+	// TYPES:
+	// 1: beginning of list
+	// 2: middle of list
+	// 3: end of list
+
+	card* current;
+	
+	switch (type)
+	{
+	case 1:
+		head->face = head->next->face;
+		head->suit = head->next->suit;
+		head->next = head->next->next;
+		return;
+	case 2:
+		for (current = head; current->next != target; current = current->next); // Iterate to card before target
+		current->next = target->next;
+		return;
+	case 3:
+		for (current = head; current->next != target; current = current->next); // Iterate to card before target
+		current->next = NULL;
+		return;
+	default:
+		printf("Error: Invalid type\n");
+		return;
 	}
 }

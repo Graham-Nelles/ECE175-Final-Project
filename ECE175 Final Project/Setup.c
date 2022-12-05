@@ -13,7 +13,6 @@ typedef struct card_s
 	struct card_s* next;
 } card;
 
-//void node_append(card* node_end, card* node_new);
 void node_create(card* target,  char suit, int face);
 void node_remove(card* head, card target);
 void node_print_debug(card* target);
@@ -104,8 +103,6 @@ void deal_all(card* deck, card* hand_player, card* hand_bot)
 			deckptr = deckptr->next;
 		}
 	}
-
-	return;
 }
 
 void create_test_list(card* head)
