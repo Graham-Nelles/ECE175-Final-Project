@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h> // malloc & calloc
 #include <stdbool.h>
+#include <string.h>
+#include <time.h> // seeding srand
 
 #define DECKSIZE 41
 #define SHUFFLES 1000
@@ -37,9 +39,10 @@ void node_print_simple(card* target);
 //void list_shuffle(card** head);
 //void array_shuffle(card* array[]);
 void content_shuffle(card* head);
+void content_shuffle_hand(card* head);
 int list_length(card* head);
 bool detectloop(card* head);
-void node_remove_special(card* head, card* target, int type);
+void node_remove_special(card* head, card* target);
 
 // Setup.c
 void create_decklist(card* head);
@@ -56,7 +59,17 @@ void printblanks(card* head);
 
 int main(void)
 {
-	//options settings = menu_main();
+	srand(time(NULL));
+	game_start:
+
+	printf("Welcome to Losing Queen!\n");
+	char name[50];
+	printf("Enter your name: ");
+	fgets(name, 50, stdin);
+	*(strchr(name, '\n')) = '\0';
+	printf("Welcome, %s!\n", name);
+
+	bool game_end = 0;
 	
 	card* deckptr = (card*)calloc(DECKSIZE, sizeof(card)); // create ptr and calloc for deck
 	card* playerptr = (card*)calloc(1 + DECKSIZE / 2, sizeof(card)); // create ptr and calloc for player hand
@@ -75,63 +88,68 @@ int main(void)
 	
 	// BOT HAND
 	printf("\nBOT:\n");
-	//printhand(bot_head);
 	clearpairs(bot_head);
-	//printhand(bot_head);
-	//printf("\n\n\n");
 
 	// PLAYER HAND
-	printf("\nPLAYER:\n");
-	//printhand(player_head);
+	printf("%s:\n", name);
 	clearpairs(player_head);
-	//printf("PLAYER HAND\n");
-	printhand(player_head);
 
 	bool playerturn;
-	if (list_length(player_head) > list_length(bot_head))
-	{
-		printf("Player has more cards, you start!\n");
-		playerturn = 1;
-	}
-	else
-	{
-		printf("Computer has more cards, I start!\n");
-		playerturn = 0;
-	}
+	if (list_length(player_head) < list_length(bot_head)) playerturn = 1;
+	else playerturn = 0;
 
-	printblanks(bot_head);
-	node_append(player_head, card_selection(bot_head));
-	printhand(bot_head);
-
-	//printf("PLAYER HAND\n");
-	printhand(player_head);
-	clearpairs(player_head);
-	printhand(player_head);
-
-	while (1) // GAME LOOP
+	card* temp;
+	while (!game_end)
 	{
+		printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+
+		printf("%s's hand:\n", name);
+		printhand(player_head);
+		printf("Bot hand:\n");
+		printblanks(bot_head);
+
 		if (playerturn) // Player's turn
 		{
-			printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPlayer turn\n\n");
-			printf("Bot's hand:\n");
-			printhand(bot_head);
-			printf("Your hand:\n");
-			printhand(player_head);
-			node_append(player_head, card_selection(bot_head));
-			clearpairs(player_head);
-			printf("Player hand:\n");
-			printhand(player_head);
+			printf("%s's turn\n", name);
+			temp = card_selection(bot_head);
+			node_append(player_head, temp);
+			node_remove_special(bot_head, temp);
+			temp->next = NULL;
 		}
 		else // Bot's turn
 		{
-			//printf("Bot's turn\n");
-			node_append(bot_head, card_selection_auto(player_head));
-			clearpairs(bot_head);
+			printf("Bot turn\n");
+			temp = card_selection_auto(player_head);
+			node_append(bot_head, temp);
+			node_remove_special(player_head, temp);
+			temp->next = NULL;
 		}
-		playerturn = !playerturn;
+
+		clearpairs(player_head);
+		clearpairs(bot_head);
+
+		if (list_length(player_head) == 0)
+		{
+			printf("%s wins!\n", name);
+			game_end = 1;
+		}
+		else if (list_length(bot_head) == 0)
+		{
+			printf("Bot wins!\n");
+			game_end = 1;
+		}
+
+		// Shuffle hands and end turn
+		//content_shuffle_hand(player_head);
+		//content_shuffle_hand(bot_head);
+		playerturn = !playerturn; // Pass turn
 	}
 
-	return 0;
+	printf("Play again? Y/y to continue.\n");
+	char userinp;
+	scanf("%c", &userinp);
+	if (userinp == 'Y' || userinp == 'y') goto game_start;
+	else return 0;
 }
 
 void clearpairs(card* head)
@@ -248,11 +266,18 @@ card* card_selection(card* head)
 	{
 		current = current->next;
 	}
+	/*
+	card* temp = current;
 
-	if (selection == 1) node_remove_special(head, current, 1); // First card in list
+	if (selection == 1)// First card in list
+	{
+		head->face = head->next->face;
+		head->suit = head->next->suit;
+		head->next = head->next->next;
+	}
 	else if (selection == cards) node_remove_special(head, current, 3); // Last card in list
 	else node_remove_special(head, current, 2); // Card in middle of list
-
+	*/
 	return current;
 }
 
@@ -261,15 +286,24 @@ card* card_selection_auto(card* head)
 	card* current = head;
 	int cards = list_length(head);
 
-	int selection = rand() % list_length(head);
+	int selection = (rand() % list_length(head)) + 1;
+	printf("Bot has selected card #%d\n", selection);
 
 	if (selection != 1) for (int i = 1; i < selection; ++i)
 	{
 		current = current->next;
 	}
-	else if (selection == 1) node_remove_special(head, current, 1); // First card in list
+	/*
+	card* temp = current;
+
+	if (selection == 1)// First card in list
+	{
+		head->face = head->next->face;
+		head->suit = head->next->suit;
+		head->next = head->next->next;
+	}
 	else if (selection == cards) node_remove_special(head, current, 3); // Last card in list
 	else node_remove_special(head, current, 2); // Card in middle of list
-
+	*/
 	return current;
 }
